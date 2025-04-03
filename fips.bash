@@ -104,7 +104,9 @@ echo ""
 command_text="openssl ciphers -v"
 echo "Command: $command_text"
 result=$(eval "$command_text")
-echo "Result:  $result"
+echo "Result:"
+echo " "
+echo "$result"
 
 if echo "$result" | grep -q "SSLv3"; then
     echo -e "\e[31mERROR: SSLv3 is not FIPS compliant\e[0m"
