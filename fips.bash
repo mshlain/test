@@ -79,8 +79,6 @@ echo "Result:"
 echo " "
 echo "$result"
 
-exit 0
-
 echo ""
 echo ""
 echo "=================================================="
