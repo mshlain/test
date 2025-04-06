@@ -123,3 +123,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/fips.py | python3
