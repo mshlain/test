@@ -8,6 +8,12 @@
 # Oneliner
 # curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/slowdisk.bash && chmod +x slowdisk.bash && sudo ./slowdisk.bash
 
+# GOOD
+# Time taken to copy: 4 seconds
+
+# BAD
+# Time taken to copy: 62 seconds
+
 # Define directories
 src="/opt/zerto/fio"
 dst="/var/log/zerto/fio"
