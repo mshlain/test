@@ -40,5 +40,9 @@ END_TIME=$(date +%s)
 TIME_TAKEN=$((END_TIME - START_TIME))
 echo "Time taken to copy: $TIME_TAKEN seconds"
 
+if [ "$TIME_TAKEN" -gt 15 ]; then
+    echo -e "\e[41mWARNING: Time taken exceeds 15 seconds!\e[0m"
+fi
+
 rm -rf "$dst"
 rm -rf "$src"
