@@ -10,9 +10,12 @@
 if [ -x "$(command -v ansible)" ]; then
   echo "Ansible is already installed. Installed version:"
   ansible --version
+  echo ''
+  echo ''
   echo 'To reinstall, first remove installed version with:'
   echo ''
-  echo '   > sudo apt remove --purge ansible -yqq && sudo apt autoremove -yqq'
+  echo "   > dpkg -l '*ansible*' | awk '/^rc|^ii/ {print \$2}' | xargs -r sudo apt remove --purge -y"
+  echo "   > sudo apt autoremove -y "
   echo ''
   echo 'and run this script again'
   exit
