@@ -4,9 +4,7 @@
 # at https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-debian
 
 
-# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/install/ansible.bash && chmod +x ./ansible.bash && ./ansible.bas
-# uninstall ansible
-# sudo 
+# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/install/ansible.bash && chmod +x ./ansible.bash && sudo ./ansible.bash
 
 # check if ansible already installed
 if [ -x "$(command -v ansible)" ]; then
@@ -14,7 +12,7 @@ if [ -x "$(command -v ansible)" ]; then
   ansible --version
   echo 'To reinstall, first remove installed version with:'
   echo ''
-  echo '   > sudo apt remove ansible -yqq && sudo apt purge ansible -yqq'
+  echo '   > sudo apt remove --purge ansible -yqq && sudo apt autoremove -yqq'
   echo ''
   echo 'and run this script again'
   exit
