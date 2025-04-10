@@ -3,10 +3,20 @@
 # universal script to install ansible on debian 12 according to official documenation
 # at https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-debian
 
+
+# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/install/ansible.bash && chmod +x ./ansible.bash && ./ansible.bas
+# uninstall ansible
+# sudo 
+
 # check if ansible already installed
 if [ -x "$(command -v ansible)" ]; then
   echo "Ansible is already installed. Installed version:"
   ansible --version
+  echo 'To reinstall, first remove installed version with:'
+  echo ''
+  echo '   > sudo apt purge ansible'
+  echo ''
+  echo 'and run this script again'
   exit
 fi
 
