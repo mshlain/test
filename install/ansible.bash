@@ -14,7 +14,7 @@ if [ -x "$(command -v ansible)" ]; then
   ansible --version
   echo 'To reinstall, first remove installed version with:'
   echo ''
-  echo '   > sudo apt purge ansible'
+  echo '   > sudo apt remove ansible -yqq && sudo apt purge ansible -yqq'
   echo ''
   echo 'and run this script again'
   exit
