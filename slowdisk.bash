@@ -1,9 +1,12 @@
 #!/bin/bash
 
 # Usage
-# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/slowdisk.bash > slowdisk.bash
+# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/slowdisk.bash
 # chmod +x ./slowdisk.bash
 # sudo ./slowdisk.bash
+
+# Oneliner
+# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/slowdisk.bash && chmod +x slowdisk.bash && sudo ./slowdisk.bash
 
 # Define directories
 src="/opt/zerto/fio"
