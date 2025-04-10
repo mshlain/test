@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Usage
-# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/slowdisk.bash
+# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/disk.speed.bash
 # chmod +x ./slowdisk.bash
 # sudo ./slowdisk.bash
 
 # Oneliner
-# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/slowdisk.bash && chmod +x slowdisk.bash && sudo ./slowdisk.bash
+# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/disk.speed.bash && chmod +x disk.speed.bash && sudo ./disk.speed.bash
 
 # GOOD
 # Time taken to copy: 4 seconds

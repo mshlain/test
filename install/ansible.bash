@@ -16,6 +16,10 @@ if [ -x "$(command -v ansible)" ]; then
   echo ''
   echo 'and run this script again'
   exit
+
+  # Force uninstall all Ansible-related packages
+  # dpkg -l '*ansible*' | awk '/^rc|^ii/ {print $2}' | xargs -r sudo apt remove --purge -y
+  # sudo apt autoremove -y
 fi
 
 # Ensure script is run as root
@@ -56,3 +60,8 @@ rm /etc/apt/sources.list.d/ansible.list
 
 # Remove the Ansible PPA signing key
 rm /usr/share/keyrings/ansible-archive-keyring.gpg
+
+if [ -x "$(command -v ansible)" ]; then
+  echo "Ansible is installed. Installed version:"
+  ansible --version
+fi
