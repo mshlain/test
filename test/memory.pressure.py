@@ -35,8 +35,11 @@ def setup_logging():
 
 def main():
     setup_logging()
-    logging.info(" ")
+    print(__doc__.strip())
+    print("-" * 80)  # Add a separator line
+    logging.info("")
     logging.info("Starting memory pressure test")
+
     size = 256 * 1024 * 1024  # Start with 256MB
     blocks = []
 
