@@ -12,6 +12,10 @@ Mechanism:
    - Total memory consumed (MB)
    - Time taken for each allocation
 
+
+Oneliner
+curl -s https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/memory.pressure.py | python3
+
 """
 
 import logging
