@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/fips.py | python3
 import logging
 import subprocess
 
