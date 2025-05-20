@@ -133,7 +133,7 @@ def check_microk8s_args(log):
 
 def _build_exec_on_pod_cmd(namespace, pod_name_prefix, cmd):
     # kubectl -n default exec -it $(kubectl -n default get pods | grep "^zkeycloak-db" | head -n 1 | awk '{print $1}') -- openssl list -providers
-    return f"/snap/bin/microk8s.kubectl -n {namespace} exec -it $(/snap/bin/microk8s.kubectl -n {namespace} get pods | grep \"^{pod_name_prefix}\" | head -n 1 | awk '{{print $1}}') -- {cmd}"
+    return f"/snap/bin/microk8s.kubectl -n {namespace} exec $(/snap/bin/microk8s.kubectl -n {namespace} get pods | grep \"^{pod_name_prefix}\" | head -n 1 | awk '{{print $1}}') -- {cmd}"
 
 
 def check_zkeycloak_db(log):
@@ -175,4 +175,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/fips.py | python3
+# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/fips.py | python3
