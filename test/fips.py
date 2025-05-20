@@ -190,11 +190,8 @@ def _core(log):
 
 
 def check_single_pod(log, namespace, short_pod_name):
-    if "db-management-utility" in short_pod_name:
-        log.error(f"{short_pod_name} is not fips compliant")
-        return
-
-    if "scripts-service" in short_pod_name:
+    not_compliant_pods = ["db-management-utility", "scripts-service"]
+    if short_pod_name in not_compliant_pods:
         log.error(f"{short_pod_name} is not fips compliant")
         return
 
