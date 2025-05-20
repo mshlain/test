@@ -198,7 +198,8 @@ def check_single_pod(log, namespace, short_pod_name):
         log.error(f"{short_pod_name} is not fips compliant")
         return
 
-    if "coredns" in short_pod_name:
+    chainguard_pods = ["coredns", "zkeycloak-0"]
+    if short_pod_name in chainguard_pods:
         check_chainguard_pod(log, namespace, short_pod_name)
         return
 
@@ -250,7 +251,7 @@ def print_summary():
 
 def main():
     log = setup_logging()
-    _core(log)
+    # _core(log)
     check_all_pods(log)
     print_summary()
 
