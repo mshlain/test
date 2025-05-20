@@ -163,10 +163,11 @@ def main():
     log.info("\n")
     check_microk8s_args(log)
     log.info("\n")
-    check_pod(log, "default", "zkeycloak-db")
-    check_pod(log, "default", "fluentd")
-    check_pod(log, "default", "static-file-system")
     check_pod(log, "ingress-nginx", "ingress-nginx-controller")
+    check_pod(log, "default", "fluentd")
+    check_pod(log, "default", "zkeycloak-db")
+    check_pod(log, "default", "management-console")
+    check_pod(log, "default", "static-file-system")
 
 
 if __name__ == "__main__":
