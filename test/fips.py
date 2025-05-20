@@ -212,7 +212,7 @@ def check_all_pods(log):
         check_single_pod(log, namespace, short_pod_name)
 
 
-def print_summary(log):
+def print_summary():
     print("\n")
     print("\n")
     print("\n")
@@ -229,7 +229,7 @@ def main():
     log = setup_logging()
     _core(log)
     check_all_pods(log)
-    print_summary(log)
+    print_summary()
 
 
 if __name__ == "__main__":
