@@ -203,8 +203,15 @@ def check_all_pods(log):
         namespace = parts[0]
         pod_name = parts[1]
         # short pod name is pod name without two last parts
-        short_pod_name_parts = pod_name.split("-")[:-2]
-        short_pod_name = "-".join(short_pod_name_parts)
+        parts = pod_name.split("-")
+        if len(parts) < 3:
+            short_pod_name = pod_name
+        else:
+            short_pod_name_parts = parts[:-2]
+            short_pod_name = "-".join(short_pod_name_parts)
+
+        if not short_pod_name:
+            raise ValueError("short_pod_name is empty")
 
         check_single_pod(log, namespace, short_pod_name)
 
