@@ -36,8 +36,12 @@ def setup_logging():
 
 def run_cmd(cmd):
     try:
-        result = subprocess.run(cmd.split(), capture_output=True, text=True)
-        return result.stdout.strip()
+        result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+        stderr = result.stderr.strip()
+        if stderr:
+            return stderr
+        stdout = result.stdout.strip()
+        return stdout
     except Exception as e:
         return f"Error: {e}"
 
@@ -127,6 +131,32 @@ def check_microk8s_args(log):
         log.error("GOFIPS is not enabled in microk8s")
 
 
+def _build_exec_on_pod_cmd(namespace, pod_name_prefix, cmd):
+    # kubectl -n default exec -it $(kubectl -n default get pods | grep "^zkeycloak-db" | head -n 1 | awk '{print $1}') -- openssl list -providers
+    return f"/snap/bin/microk8s.kubectl -n {namespace} exec -it $(/snap/bin/microk8s.kubectl -n {namespace} get pods | grep \"^{pod_name_prefix}\" | head -n 1 | awk '{{print $1}}') -- {cmd}"
+
+
+def check_zkeycloak_db(log):
+    log_section(log, "Test zkeycloak-db pod")
+
+    pod_cmd = "openssl list -providers"
+    cmd = _build_exec_on_pod_cmd("default", "zkeycloak-db", pod_cmd)
+    log.info(f"Command: {cmd}")
+    result = run_cmd(cmd)
+    log.info(f"Result:\n{result}")
+
+    if all(x in result for x in ["fips", "OpenSSL FIPS Provider", "status: active"]):
+        log.success("FIPS provider is enabled successfully in zkeycloak-db pod")
+    else:
+        log.error("FIPS provider is not enabled properly in zkeycloak-db pod")
+
+
+def check_pods(log):
+    log_section(log, "Test pods")
+
+    check_zkeycloak_db(log)
+
+
 def main():
     log = setup_logging()
     check_fips(log)
@@ -138,6 +168,8 @@ def main():
     check_ciphers(log)
     log.info("\n")
     check_microk8s_args(log)
+    log.info("\n")
+    check_pods(log)
 
 
 if __name__ == "__main__":
