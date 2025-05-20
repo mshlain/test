@@ -3,6 +3,8 @@
 import logging
 import subprocess
 
+errors_array = []
+
 
 class ColorFormatter(logging.Formatter):
     grey = "\x1b[38;21m"
@@ -12,6 +14,9 @@ class ColorFormatter(logging.Formatter):
     reset = "\x1b[0m"
 
     def format(self, record):
+        if record.levelno == logging.ERROR:
+            errors_array.append(record.msg)
+
         if record.levelno == logging.INFO:
             record.msg = f"{self.blue}{record.msg}{self.reset}"
         elif record.levelno == logging.ERROR:
@@ -207,10 +212,24 @@ def check_all_pods(log):
         check_single_pod(log, namespace, short_pod_name)
 
 
+def print_summary(log):
+    print("\n")
+    print("\n")
+    print("\n")
+    errors_count = len(errors_array)
+    if errors_count > 0:
+        print(f"Summary: {errors_count} Errors found:")
+        for error in errors_array:
+            print(error)
+    else:
+        print("Summary: No errors found.")
+
+
 def main():
     log = setup_logging()
     _core(log)
     check_all_pods(log)
+    print_summary(log)
 
 
 if __name__ == "__main__":
