@@ -142,7 +142,7 @@ def _build_exec_on_pod_cmd(namespace, pod_name_prefix, cmd):
     return f"/snap/bin/microk8s.kubectl -n {namespace} exec $(/snap/bin/microk8s.kubectl -n {namespace} get pods | grep \"^{pod_name_prefix}\" | head -n 1 | awk '{{print $1}}') -- {cmd}"
 
 
-def check_pod(log, namespace, pod_name):
+def check_infra_pod(log, namespace, pod_name):
     log_section(log, f"Test {pod_name} pod")
 
     pod_cmd = "openssl list -providers"
@@ -155,6 +155,25 @@ def check_pod(log, namespace, pod_name):
         log.success(f"FIPS provider is enabled successfully in {pod_name} pod")
     else:
         log.error(f"FIPS provider is not enabled properly in {pod_name} pod")
+
+
+def check_chainguard_pod(log, namespace, pod_name):
+    log_section(log, f"Test {pod_name} pod")
+
+    pod_cmd = "openssl-fips-test"
+    cmd = _build_exec_on_pod_cmd(namespace, pod_name, pod_cmd)
+    log.info(f"Command: {cmd}")
+    result = run_cmd(cmd)
+    log.info(f"Result:\n{result}")
+
+    if "Lifecycle assurance satisfied" in result:
+        log.success(
+            f"FIPS provider is enabled successfully in {pod_name} pod (chainguard)"
+        )
+    else:
+        log.error(
+            f"FIPS provider is not enabled properly in {pod_name} pod (chainguard)"
+        )
 
 
 def _core(log):
@@ -179,7 +198,10 @@ def check_single_pod(log, namespace, short_pod_name):
         log.error(f"{short_pod_name} is not fips compliant")
         return
 
-    check_pod(
+    if "coredns" in short_pod_name:
+        check_chainguard_pod(log, namespace, short_pod_name)
+
+    check_infra_pod(
         log,
         namespace,
         short_pod_name,
