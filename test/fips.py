@@ -38,10 +38,10 @@ def run_cmd(cmd):
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
         stderr = result.stderr.strip()
-        if stderr:
+        if stderr and result.returncode != 0:
             return stderr
         stdout = result.stdout.strip()
-        return stdout
+        return stderr + "\n" + stdout
     except Exception as e:
         return f"Error: {e}"
 
@@ -151,8 +151,18 @@ def check_pod(log, namespace, pod_name):
         log.error(f"FIPS provider is not enabled properly in {pod_name} pod")
 
 
+def check_all_pods(log):
+    check_pod(log, "ingress-nginx", "ingress-nginx-controller")
+    check_pod(log, "default", "fluentd")
+    check_pod(log, "default", "zkeycloak-db")
+    check_pod(log, "default", "management-console")
+    check_pod(log, "default", "static-file-system")
+    check_pod(log, "default", "configuration-service")
+
+
 def main():
     log = setup_logging()
+
     check_fips(log)
     log.info("\n")
     check_openssl(log)
@@ -163,11 +173,7 @@ def main():
     log.info("\n")
     check_microk8s_args(log)
     log.info("\n")
-    check_pod(log, "ingress-nginx", "ingress-nginx-controller")
-    check_pod(log, "default", "fluentd")
-    check_pod(log, "default", "zkeycloak-db")
-    check_pod(log, "default", "management-console")
-    check_pod(log, "default", "static-file-system")
+    check_all_pods(log)
 
 
 if __name__ == "__main__":
