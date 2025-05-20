@@ -165,6 +165,7 @@ def main():
     log.info("\n")
     check_pod(log, "zkeycloak-db")
     check_pod(log, "fluentd")
+    check_pod(log, "static-file-system")
 
 
 if __name__ == "__main__":
