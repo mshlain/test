@@ -136,25 +136,19 @@ def _build_exec_on_pod_cmd(namespace, pod_name_prefix, cmd):
     return f"/snap/bin/microk8s.kubectl -n {namespace} exec $(/snap/bin/microk8s.kubectl -n {namespace} get pods | grep \"^{pod_name_prefix}\" | head -n 1 | awk '{{print $1}}') -- {cmd}"
 
 
-def check_zkeycloak_db(log):
-    log_section(log, "Test zkeycloak-db pod")
+def check_pod(log, pod_name):
+    log_section(log, f"Test {pod_name} pod")
 
     pod_cmd = "openssl list -providers"
-    cmd = _build_exec_on_pod_cmd("default", "zkeycloak-db", pod_cmd)
+    cmd = _build_exec_on_pod_cmd("default", pod_name, pod_cmd)
     log.info(f"Command: {cmd}")
     result = run_cmd(cmd)
     log.info(f"Result:\n{result}")
 
     if all(x in result for x in ["fips", "OpenSSL FIPS Provider", "status: active"]):
-        log.success("FIPS provider is enabled successfully in zkeycloak-db pod")
+        log.success(f"FIPS provider is enabled successfully in {pod_name} pod")
     else:
-        log.error("FIPS provider is not enabled properly in zkeycloak-db pod")
-
-
-def check_pods(log):
-    log_section(log, "Test pods")
-
-    check_zkeycloak_db(log)
+        log.error(f"FIPS provider is not enabled properly in {pod_name} pod")
 
 
 def main():
@@ -169,7 +163,7 @@ def main():
     log.info("\n")
     check_microk8s_args(log)
     log.info("\n")
-    check_pods(log)
+    check_pod(log, "zkeycloak-db")
 
 
 if __name__ == "__main__":
