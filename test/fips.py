@@ -53,7 +53,7 @@ def log_section(log, title):
     log.info("")
 
 
-def check_fips(log):
+def check_fips_in_kernel(log):
     log_section(log, "Test fips in kernel")
     cmd = "cat /proc/sys/crypto/fips_enabled"
     log.info(f"Command: {cmd}")
@@ -153,7 +153,7 @@ def check_pod(log, namespace, pod_name):
 
 
 def _core(log):
-    check_fips(log)
+    check_fips_in_kernel(log)
     log.info("\n")
     check_openssl(log)
     log.info("\n")
