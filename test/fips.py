@@ -164,6 +164,7 @@ def main():
     check_microk8s_args(log)
     log.info("\n")
     check_pod(log, "zkeycloak-db")
+    check_pod(log, "fluentd")
 
 
 if __name__ == "__main__":
