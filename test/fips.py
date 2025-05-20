@@ -136,11 +136,11 @@ def _build_exec_on_pod_cmd(namespace, pod_name_prefix, cmd):
     return f"/snap/bin/microk8s.kubectl -n {namespace} exec $(/snap/bin/microk8s.kubectl -n {namespace} get pods | grep \"^{pod_name_prefix}\" | head -n 1 | awk '{{print $1}}') -- {cmd}"
 
 
-def check_pod(log, pod_name):
+def check_pod(log, namespace, pod_name):
     log_section(log, f"Test {pod_name} pod")
 
     pod_cmd = "openssl list -providers"
-    cmd = _build_exec_on_pod_cmd("default", pod_name, pod_cmd)
+    cmd = _build_exec_on_pod_cmd(namespace, pod_name, pod_cmd)
     log.info(f"Command: {cmd}")
     result = run_cmd(cmd)
     log.info(f"Result:\n{result}")
@@ -163,9 +163,10 @@ def main():
     log.info("\n")
     check_microk8s_args(log)
     log.info("\n")
-    check_pod(log, "zkeycloak-db")
-    check_pod(log, "fluentd")
-    check_pod(log, "static-file-system")
+    check_pod(log, "default", "zkeycloak-db")
+    check_pod(log, "default", "fluentd")
+    check_pod(log, "default", "static-file-system")
+    check_pod(log, "ingress-nginx", "ingress-nginx-controller")
 
 
 if __name__ == "__main__":
