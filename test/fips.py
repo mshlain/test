@@ -200,6 +200,7 @@ def check_single_pod(log, namespace, short_pod_name):
 
     if "coredns" in short_pod_name:
         check_chainguard_pod(log, namespace, short_pod_name)
+        return
 
     check_infra_pod(
         log,
