@@ -263,7 +263,7 @@ def print_summary():
 
 def main():
     log = setup_logging()
-    # _core(log)
+    _core(log)
     check_all_pods(log)
     print_summary()
 
