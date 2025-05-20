@@ -111,6 +111,22 @@ def check_ciphers(log):
         log.success("No SSLv3 ciphers found, FIPS compliance is maintained")
 
 
+def check_microk8s_args(log):
+    log_section(log, "Test microk8s args")
+
+    cmd = "cat /var/snap/microk8s/current/args/fips-env"
+    log.info(f"Command: {cmd}")
+    log.info("Expected: GOFIPS: 1")
+
+    result = run_cmd(cmd)
+    log.info(f"Result:  {result}")
+
+    if "GOFIPS: 1" in result:
+        log.success("GOFIPS is enabled in microk8s")
+    else:
+        log.error("GOFIPS is not enabled in microk8s")
+
+
 def main():
     log = setup_logging()
     check_fips(log)
@@ -120,6 +136,8 @@ def main():
     check_providers(log)
     log.info("\n")
     check_ciphers(log)
+    log.info("\n")
+    check_microk8s_args(log)
 
 
 if __name__ == "__main__":
