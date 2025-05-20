@@ -15,7 +15,7 @@ class ColorFormatter(logging.Formatter):
         if record.levelno == logging.INFO:
             record.msg = f"{self.blue}{record.msg}{self.reset}"
         elif record.levelno == logging.ERROR:
-            record.msg = f"{self.red}{record.msg}{self.reset}"
+            record.msg = f"{self.red} ERROR {record.msg}{self.reset}"
         elif record.levelno == logging.SUCCESS:
             record.msg = f"{self.green}{record.msg}{self.reset}"
         return super().format(record)
@@ -151,18 +151,16 @@ def check_pod(log, namespace, pod_name):
         log.error(f"FIPS provider is not enabled properly in {pod_name} pod")
 
 
-def check_all_pods(log):
-    check_pod(log, "ingress-nginx", "ingress-nginx-controller")
-    check_pod(log, "default", "fluentd")
-    check_pod(log, "default", "zkeycloak-db")
-    check_pod(log, "default", "management-console")
-    check_pod(log, "default", "static-file-system")
-    check_pod(log, "default", "configuration-service")
+# def check_all_pods(log):
+#     check_pod(log, "ingress-nginx", "ingress-nginx-controller")
+#     check_pod(log, "default", "fluentd")
+#     check_pod(log, "default", "zkeycloak-db")
+#     check_pod(log, "default", "management-console")
+#     check_pod(log, "default", "static-file-system")
+#     check_pod(log, "default", "configuration-service")
 
 
-def main():
-    log = setup_logging()
-
+def _core(log):
     check_fips(log)
     log.info("\n")
     check_openssl(log)
@@ -173,6 +171,47 @@ def main():
     log.info("\n")
     check_microk8s_args(log)
     log.info("\n")
+    # check_all_pods(log)
+
+
+def check_single_pod(log, namespace, short_pod_name):
+    if "db-management-utility" in short_pod_name:
+        log.error(f"{short_pod_name} is not fips compliant")
+        return
+
+    if "scripts-service" in short_pod_name:
+        log.error(f"{short_pod_name} is not fips compliant")
+        return
+
+    check_pod(
+        log,
+        namespace,
+        short_pod_name,
+    )
+
+
+def check_all_pods(log):
+    cmd = "/snap/bin/microk8s.kubectl get pods --all-namespaces"
+    result = run_cmd(cmd)
+    lines = result.split("\n")
+    for line in lines:
+        if not line:
+            continue
+        if "READY" in line:
+            continue
+        parts = line.split()
+        namespace = parts[0]
+        pod_name = parts[1]
+        # short pod name is pod name without two last parts
+        short_pod_name_parts = pod_name.split("-")[:-2]
+        short_pod_name = "-".join(short_pod_name_parts)
+
+        check_single_pod(log, namespace, short_pod_name)
+
+
+def main():
+    log = setup_logging()
+    _core(log)
     check_all_pods(log)
 
 
