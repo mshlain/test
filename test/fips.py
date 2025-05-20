@@ -60,12 +60,13 @@ def check_fips(log):
     log.info("Expected: 1")
 
     result = run_cmd(cmd)
+    result = result.strip()
     log.info(f"Result:  {result}")
 
     if result == "1":
-        log.success("FIPS is enabled")
+        log.success("FIPS is enabled in kernel")
     else:
-        log.error(f"Expected 1 got {result}")
+        log.error("FIPS is not enabled in kernel")
 
 
 def check_openssl(log):
@@ -151,15 +152,6 @@ def check_pod(log, namespace, pod_name):
         log.error(f"FIPS provider is not enabled properly in {pod_name} pod")
 
 
-# def check_all_pods(log):
-#     check_pod(log, "ingress-nginx", "ingress-nginx-controller")
-#     check_pod(log, "default", "fluentd")
-#     check_pod(log, "default", "zkeycloak-db")
-#     check_pod(log, "default", "management-console")
-#     check_pod(log, "default", "static-file-system")
-#     check_pod(log, "default", "configuration-service")
-
-
 def _core(log):
     check_fips(log)
     log.info("\n")
@@ -171,7 +163,6 @@ def _core(log):
     log.info("\n")
     check_microk8s_args(log)
     log.info("\n")
-    # check_all_pods(log)
 
 
 def check_single_pod(log, namespace, short_pod_name):
