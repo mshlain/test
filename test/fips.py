@@ -198,11 +198,23 @@ def check_single_pod(log, namespace, short_pod_name):
         log.error(f"{short_pod_name} is not fips compliant")
         return
 
-    chainguard_pods = ["coredns", "zkeycloak-0"]
+    not_testable_pods = ["host-metrics", "pods-metrics-kube-eagle"]
+    if short_pod_name in not_testable_pods:
+        log.info(f"{short_pod_name} is not testable")
+        return
+
+    chainguard_pods = [
+        "coredns",
+        "zkeycloak-0",
+        "prometheus-server",
+        "static-file-system",
+        "metrics-server-metrics-server-fips",
+    ]
     if short_pod_name in chainguard_pods:
         check_chainguard_pod(log, namespace, short_pod_name)
         return
 
+    # all the rest pods are infra pods
     check_infra_pod(
         log,
         namespace,
