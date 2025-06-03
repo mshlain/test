@@ -121,20 +121,39 @@ def check_ciphers(log):
         log.success("No SSLv3 ciphers found, FIPS compliance is maintained")
 
 
+def load_env_file(file_path):
+    env_dict = {}
+    with open(file_path, 'r') as f:
+        for line in f:
+            # Remove everything after '#' and strip whitespace
+            line = line.split('#')[0].strip()
+
+            # Skip empty lines
+            if not line:
+                continue
+
+            # Split on '=' and strip spaces around key/value
+            if '=' in line:
+                key, value = line.split('=', 1)
+                env_dict[key.strip()] = value.strip()
+
+    return env_dict
+
 def check_microk8s_args(log):
     log_section(log, "Test microk8s args")
 
     cmd = "cat /var/snap/microk8s/current/args/fips-env"
     log.info(f"Command: {cmd}")
-    log.info("Expected: GOFIPS=1")
-
     result = run_cmd(cmd)
-    log.info(f"Result:  {result}")
+    log.info(f"Result: {result}")
 
-    if "GOFIPS=1" in result:
+    fips_env_values = load_env_file("/var/snap/microk8s/current/args/fips-env")
+    go_fips_value = fips_env_values.get("GOFIPS", "-1")
+
+    if go_fips_value == "1":
         log.success("GOFIPS is enabled in microk8s")
     else:
-        log.error("GOFIPS is not enabled in microk8s")
+        log.error(f"GOFIPS is not enabled in microk8s. Expected value: 1. Current value: {go_fips_value}")
 
 
 def _build_exec_on_pod_cmd(namespace, pod_name_prefix, cmd):
