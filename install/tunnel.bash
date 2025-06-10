@@ -1,4 +1,4 @@
-# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/install/tunnel.bash | python3
+# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/install/tunnel.bash | bash
 
 #!/bin/bash
 
