@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/fips.py | python3
+import os
 import logging
 import subprocess
 
@@ -123,6 +124,10 @@ def check_ciphers(log):
 
 def load_env_file(file_path):
     env_dict = {}
+    # return empty dict if file does not exist
+    if os.path.exists(file_path) is False:
+        return env_dict
+
     with open(file_path, 'r') as f:
         for line in f:
             # Remove everything after '#' and strip whitespace
