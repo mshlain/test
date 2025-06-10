@@ -1,3 +1,5 @@
+# curl https://raw.githubusercontent.com/mshlain/test/refs/heads/main/install/tunnel.bash | python3
+
 #!/bin/bash
 
 # Create a temporary directory and navigate to it
