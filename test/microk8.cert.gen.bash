@@ -48,7 +48,7 @@ while true; do
     fi
     
     # Get current CSR configuration content
-    csr_file="/var/snap/microk8s/current/certs/certs/csr.conf.rendered"
+    csr_file="/var/snap/microk8s/current/certs/csr.conf.rendered"
     if [ -f "$csr_file" ]; then
         current_csr=$(cat "$csr_file" 2>/dev/null)
         
