@@ -32,7 +32,7 @@ echo ""
 # Main monitoring loop
 while true; do
     # Get current IP address
-    current_ip=$(hostname -I | tr -d ' \n')
+    current_ip=$(hostname -I | tr -d '\n')
     
     # Check if this is the first run or if IP changed
     if [ -z "$previous_ip" ]; then
