@@ -5,7 +5,7 @@
 # Usage
 # curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/microk8.cert.gen.bash
 # chmod +x ./microk8.cert.gen.bash
-# ./microk8.cert.gen.bash
+# ./microk8.cert.gen.bash | tee -a ./microk8.cert.gen.bash.log
 
 # Initialize variables to store previous values
 previous_ip=""
