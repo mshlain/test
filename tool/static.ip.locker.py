@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+
+
+# Usage
+# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/tool/static.ip.locker.py
+# sudo python3 ./static.ip.locker.py
+
+
 import logging
 import os
 import shutil
