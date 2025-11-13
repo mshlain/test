@@ -225,6 +225,8 @@ class StaticIpWriter:
             raise Exception(f"Failed to write network configuration: {e}")
     
     def _build_interfaces_config(self, nic: str, eth_cfg: EthernetConfig) -> str:
+        dns_nameservers_value = ' '.join(eth_cfg.DnsServers) if eth_cfg.DnsServers else '8.8.8.8' 
+
         """Build the content for /etc/network/interfaces file."""
         config = f"""# This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -239,15 +241,9 @@ iface {nic} inet static
     address {eth_cfg.IpAddress}
     netmask {eth_cfg.SubnetMask}
     gateway {eth_cfg.Gateway}
-    dns-nameservers {' '.join(eth_cfg.DnsServers) if eth_cfg.DnsServers else '' }
+    dns-nameservers {dns_nameservers_value}
 """
-        
-        # Add DNS servers as comments (actual DNS config goes in resolv.conf)
-        if eth_cfg.DnsServers:
-            config += "    # DNS servers configured in /etc/resolv.conf\n"
-            for dns in eth_cfg.DnsServers:
-                config += f"    # dns-nameserver {dns}\n"
-        
+
         return config
     
     def _write_dns_config(self, dns_servers: list):
