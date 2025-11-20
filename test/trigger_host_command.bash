@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # Usage
 # curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/trigger_host_command.bash
