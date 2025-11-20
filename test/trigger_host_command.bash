@@ -4,6 +4,8 @@
 # chmod +x ./microk8.cert.gen.bash
 # ./microk8.cert.gen.bash | tee -a ./microk8.cert.gen.bash.log
 
+set -x
+
 TASK_ID=$(curl \
   --unix-socket /opt/zerto/host_commands/sockets/socket \
   -X POST "http://localhost/TasksService/StartTask" \
