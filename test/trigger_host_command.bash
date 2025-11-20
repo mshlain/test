@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Usage
-# curl -O https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/trigger_host_command.bash
-# chmod +x ./microk8.cert.gen.bash
-# ./microk8.cert.gen.bash | tee -a ./microk8.cert.gen.bash.log
-
+# curl -s https://raw.githubusercontent.com/mshlain/test/refs/heads/main/test/trigger_host_command.bash | bash
+#
 set -x
 
 TASK_ID=$(curl \
