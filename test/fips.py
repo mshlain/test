@@ -147,7 +147,7 @@ def load_env_file(file_path):
 def check_microk8s_args(log):
     log_section(log, "Test microk8s args")
 
-    cmd = "microk8s version"
+    cmd = "/snap/bin/microk8s version"
     log.info(f"Command: {cmd}")
     microk8s_version_result = run_cmd(cmd)
     log.info(f"microk8s_version_result: {microk8s_version_result}")
@@ -173,6 +173,63 @@ def check_microk8s_args(log):
     else:
         log.error(f"GOFIPS is not enabled in microk8s. Expected value: 1. Current value: {go_fips_value}")
 
+def get_daemon_pid(log, daemon_name):
+    cmd = f"systemctl status {daemon_name} | grep 'Main PID:' | awk '{{print $3}}'"
+    log.info(f"Command: {cmd}")
+    daemon_pid_result = run_cmd(cmd)
+
+    if daemon_pid_result.strip() == "":
+        log.error(f"Failed to get daemon pid for {daemon_name}")
+        return None
+
+    daemon_pid_result = daemon_pid_result.strip()
+    log.info(f"daemon_pid_result: {daemon_pid_result}")
+    return daemon_pid_result
+
+def get_daemon_environ_text(log, daemon_pid):
+    cmd = f"sudo cat /proc/{daemon_pid}/environ"
+    log.info(f"Command: {cmd}")
+    daemon_environ_result = run_cmd(cmd)
+    #log.info(f"daemon_environ_result: {daemon_environ_result}")
+
+    return daemon_environ_result.strip()
+
+def _check_microk8s_daemon_impl(log, daemon_name):
+    daemon_pid = get_daemon_pid(log, daemon_name)
+    daemon_environ_text = get_daemon_environ_text(log, daemon_pid)
+
+    if "GODEBUG=fips140=on" in daemon_environ_text:
+        log.success(f"GODEBUG=fips140=on is enabled for {daemon_name}")
+    else:
+        log.error(f"GODEBUG=fips140=on is not enabled for {daemon_name}. daemon_environ_text: {daemon_environ_text}")
+
+
+def check_microk8s_daemons(log):
+    log_section(log, "Test microk8s daemons")
+
+    cmd = "/snap/bin/microk8s version"
+    log.info(f"Command: {cmd}")
+    microk8s_version_result = run_cmd(cmd)
+    log.info(f"microk8s_version_result: {microk8s_version_result}")
+
+    if "-zmicrok8s-" not in microk8s_version_result:
+        log.info("Pre zmicrok8s version, nothing to check")
+        return
+
+    service_names = [
+        #"snap.microk8s.daemon-apiserver-kicker.service", # bash script that re/starts all required daemons
+        "snap.microk8s.daemon-containerd.service",
+        #"snap.microk8s.daemon-k8s-dqlite.service", # inactive
+        #"snap.microk8s.daemon-apiserver-proxy.service", # inactive
+        "snap.microk8s.daemon-etcd.service",
+        "snap.microk8s.daemon-kubelite.service",
+        #"snap.microk8s.daemon-cluster-agent.service", # bash
+        "snap.microk8s.daemon-flanneld.service"
+    ]
+
+    for service_name in service_names:
+        log.info(f"Checking daemon: {service_name}")
+        _check_microk8s_daemon_impl(log, service_name)
 
 def _build_exec_on_pod_cmd(namespace, pod_name_prefix, cmd):
     # kubectl -n default exec -it $(kubectl -n default get pods | grep "^zkeycloak-db" | head -n 1 | awk '{print $1}') -- openssl list -providers
@@ -223,6 +280,8 @@ def _core(log):
     check_ciphers(log)
     log.info("\n")
     check_microk8s_args(log)
+    log.info("\n")
+    check_microk8s_daemons(log)
     log.info("\n")
 
 
