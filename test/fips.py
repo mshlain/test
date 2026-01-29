@@ -147,11 +147,24 @@ def load_env_file(file_path):
 def check_microk8s_args(log):
     log_section(log, "Test microk8s args")
 
+    cmd = "microk8s version"
+    log.info(f"Command: {cmd}")
+    microk8s_version_result = run_cmd(cmd)
+    log.info(f"microk8s_version_result: {microk8s_version_result}")
+
     cmd = "cat /var/snap/microk8s/current/args/fips-env"
     log.info(f"Command: {cmd}")
-    result = run_cmd(cmd)
-    log.info(f"Result: {result}")
+    cat_fips_env_result = run_cmd(cmd)
+    log.info(f"cat_fips_env_result: {cat_fips_env_result}")
 
+    if "-zmicrok8s-" in microk8s_version_result:
+        if 'export GODEBUG=fips140=on' in cat_fips_env_result:
+            log.success("GODEBUG=fips140=on is enabled in microk8s")
+        else:
+            log.error("GODEBUG=fips140=on is not enabled in microk8s")
+        return
+
+    # pre zmicrok8s versions: 1.32
     fips_env_values = load_env_file("/var/snap/microk8s/current/args/fips-env")
     go_fips_value = fips_env_values.get("GOFIPS", "-1")
 
